@@ -60,6 +60,7 @@ body {
     z-index: 20;
     letter-spacing: clamp(2px, 0.3vw, 6px);
     pointer-events: none;
+    white-space: nowrap;
 }
 
 .slideshow-img {
