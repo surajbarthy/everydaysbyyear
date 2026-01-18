@@ -47,7 +47,7 @@ body {
 
 .year-label {
     position: absolute;
-    top: clamp(12px, 2vh, 30px);
+    top: 0%;
     left: 50%;
     transform: translateX(-50%);
     font-size: clamp(18px, 3vw, 48px);
