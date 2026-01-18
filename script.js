@@ -92,7 +92,8 @@ function loadYear(year) {
 
     // Update year label
     if (yearLabel) {
-        yearLabel.textContent = `YEAR ${year}`;
+        const calendarYear = 2015 + parseInt(year);
+        yearLabel.textContent = `YEAR ${year} - ${calendarYear}`;
     }
 
     errorMessage.style.display = 'none';
