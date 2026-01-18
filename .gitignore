@@ -1,0 +1,9 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (if you add any build tools later)
+node_modules/
+
+# Optional: ignore manifest if you want to regenerate it
+# manifest.json

@@ -1,0 +1,14 @@
+{
+  "name": "everydays-show",
+  "version": "1.0.0",
+  "description": "Static website for Everydays 10 Years Show",
+  "type": "module",
+  "scripts": {
+    "dev": "node watch-images.mjs",
+    "serve": "npx serve -p 3000",
+    "start": "node watch-images.mjs & npx serve -p 3000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

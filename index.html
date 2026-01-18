@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everydays 10 Years Show</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="book-container">
+        <!-- Left Panel: Slideshow -->
+        <div class="panel left-panel">
+            <div class="slideshow-container">
+                <div class="year-label">YEAR 1</div>
+                <img id="slideshow-image" src="" alt="" class="slideshow-img">
+            </div>
+        </div>
+
+        <!-- Right Panel: Grid -->
+        <div class="panel right-panel">
+            <div id="error-message" class="error-message" style="display: none;">
+                <p>manifest.json not found. Please run:</p>
+                <code>node generate-manifest.mjs</code>
+            </div>
+            <div id="grid-container" class="grid-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
