@@ -174,6 +174,14 @@ function updateSlideshowImage(index) {
         slideshowImage.alt = getAltText(images[index]);
         currentIndex = index;
         updateGridSelection(index);
+        
+        // Log container and image size when image loads
+        slideshowImage.onload = function() {
+            const container = slideshowImage.parentElement;
+            const containerRect = container.getBoundingClientRect();
+            const imgRect = slideshowImage.getBoundingClientRect();
+            console.log(`Slideshow: Container ${containerRect.width.toFixed(0)}x${containerRect.height.toFixed(0)}px, Image ${imgRect.width.toFixed(0)}x${imgRect.height.toFixed(0)}px, Natural ${slideshowImage.naturalWidth}x${slideshowImage.naturalHeight}px`);
+        };
     }
 }
 
@@ -359,6 +367,9 @@ function updateGridLayout() {
     }
     
     baseItemWidth = (availableWidth / bestColumns) * finalScale;
+    
+    // Log container size for debugging
+    console.log(`Grid Layout: ${bestColumns} columns, ${baseItemWidth.toFixed(1)}px square containers, container: ${containerWidth.toFixed(0)}x${containerHeight.toFixed(0)}px`);
     
     // Apply layout
     const columnHeights = new Array(bestColumns).fill(0);
