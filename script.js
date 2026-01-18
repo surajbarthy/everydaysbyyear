@@ -300,8 +300,8 @@ function updateGridLayout() {
         const columnHeights = new Array(cols).fill(0);
         
         for (let i = 0; i < aspectRatios.length; i++) {
-            const aspect = aspectRatios[i];
-            const itemHeight = baseItemWidth / aspect;
+            // All items are square
+            const itemHeight = baseItemWidth;
             
             // Find shortest column
             const minHeight = Math.min(...columnHeights);
@@ -342,8 +342,8 @@ function updateGridLayout() {
         
         const columnHeights = new Array(bestColumns).fill(0);
         for (let i = 0; i < aspectRatios.length; i++) {
-            const aspect = aspectRatios[i];
-            const itemHeight = testWidth / aspect;
+            // All items are square
+            const itemHeight = testWidth;
             const minHeight = Math.min(...columnHeights);
             const targetColumn = columnHeights.indexOf(minHeight);
             columnHeights[targetColumn] += itemHeight + GUTTER_SIZE;
@@ -368,9 +368,9 @@ function updateGridLayout() {
     }
     
     items.forEach((item, index) => {
-        const aspect = aspectRatios[index];
+        // Make all items square
         const itemWidth = baseItemWidth;
-        const itemHeight = baseItemWidth / aspect;
+        const itemHeight = baseItemWidth; // Square container
         
         // Find shortest column
         const minHeight = Math.min(...columnHeights);
