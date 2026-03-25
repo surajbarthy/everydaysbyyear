@@ -159,8 +159,4 @@ async function init() {
     }
 }
 
-document.getElementById('nav-close')?.addEventListener('click', () => {
-    window.location.href = '../#1';
-});
-
 init();

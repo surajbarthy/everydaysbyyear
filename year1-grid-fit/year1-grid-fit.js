@@ -67,7 +67,10 @@ function updateChrome(year) {
 }
 
 function showError(message) {
-    if (mainEl) mainEl.classList.add('main-wrap--error');
+    if (mainEl) {
+        mainEl.classList.add('main-wrap--error');
+        mainEl.style.removeProperty('--fit-outer');
+    }
     if (errorEl) {
         errorEl.hidden = false;
         errorEl.innerHTML = `<p>${message}</p><code>node generate-manifest.mjs</code>`;
@@ -83,12 +86,19 @@ function getFitAreaSize() {
     if (!mainEl) {
         return { width: window.innerWidth, height: window.innerHeight };
     }
+    const cs = getComputedStyle(mainEl);
+    const pl = parseFloat(cs.paddingLeft) || 0;
+    const pr = parseFloat(cs.paddingRight) || 0;
+    const pt = parseFloat(cs.paddingTop) || 0;
+    const pb = parseFloat(cs.paddingBottom) || 0;
     const r = mainEl.getBoundingClientRect();
     if (r.width >= 2 && r.height >= 2) {
-        return { width: r.width, height: r.height };
+        return {
+            width: Math.max(0, mainEl.clientWidth - pl - pr),
+            height: Math.max(0, mainEl.clientHeight - pt - pb),
+        };
     }
-    const pad = parseFloat(getComputedStyle(mainEl).paddingLeft) || 0;
-    const padTotal = pad * 2;
+    const padTotal = pl + pr;
     const hw = headerEl?.getBoundingClientRect().height ?? 0;
     const fh = footerEl?.getBoundingClientRect().height ?? 0;
     return {
@@ -147,12 +157,21 @@ function fitGridToWindow() {
 
     fitRetryCount = 0;
 
-    const { s, cols, gap } = computeOptimalSquareGrid(
-        itemCount,
-        rw,
-        rh,
-        GAP_PREFERRED_PX
-    );
+    let result;
+    for (let pass = 0; pass < 2; pass++) {
+        const inner = getFitAreaSize();
+        result = computeOptimalSquareGrid(
+            itemCount,
+            inner.width,
+            inner.height,
+            GAP_PREFERRED_PX
+        );
+        if (mainEl) {
+            mainEl.style.setProperty('--fit-outer', `${result.gap}px`);
+        }
+    }
+
+    const { s, cols, gap } = result;
     const cell = Math.max(1, s);
 
     gridEl.style.display = 'grid';
@@ -167,7 +186,10 @@ function fitGridToWindow() {
 }
 
 function buildGrid(items) {
-    if (mainEl) mainEl.classList.remove('main-wrap--error');
+    if (mainEl) {
+        mainEl.classList.remove('main-wrap--error');
+        mainEl.style.removeProperty('--fit-outer');
+    }
     if (errorEl) errorEl.hidden = true;
     if (!gridEl) return;
     gridEl.innerHTML = '';
@@ -275,12 +297,5 @@ async function init() {
         showError('Could not load manifest.json. From the project root, run:');
     }
 }
-
-document.getElementById('nav-close')?.addEventListener('click', () => {
-    const raw = getYearFromHash();
-    const keys = displayYearKeys(allManifests);
-    const y = keys.includes(raw) ? raw : keys[0] || '1';
-    window.location.href = `../#${y}`;
-});
 
 init();

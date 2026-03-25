@@ -73,22 +73,6 @@ a:hover {
     font-weight: 400;
 }
 
-.nav-close {
-    justify-self: end;
-    background: none;
-    border: none;
-    font-family: inherit;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--text);
-    padding: 4px 8px;
-}
-
-.nav-close:hover {
-    opacity: 0.65;
-}
-
 .site-footer {
     position: fixed;
     bottom: 0;
@@ -120,15 +104,6 @@ a:hover {
     gap: var(--nav-link-gap);
     align-items: center;
     justify-content: flex-end;
-}
-
-.footer-all-years {
-    opacity: 0.95;
-    white-space: nowrap;
-}
-
-a.footer-all-years:hover {
-    opacity: 0.65;
 }
 
 .main-wrap {

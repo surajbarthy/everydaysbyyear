@@ -45,7 +45,10 @@ function flattenDisplayYears(manifests) {
 }
 
 function showError(message) {
-    if (mainEl) mainEl.classList.add('main-wrap--error');
+    if (mainEl) {
+        mainEl.classList.add('main-wrap--error');
+        mainEl.style.removeProperty('--all-years-side');
+    }
     if (errorEl) {
         errorEl.hidden = false;
         errorEl.innerHTML = `<p>${message}</p><code>node generate-manifest.mjs</code>`;
@@ -126,17 +129,22 @@ function fitGridToWindow() {
 
     fitRetryCount = 0;
 
-    const { s, cols, gap } = computeOptimalSquareGrid(
-        itemCount,
-        rw,
-        rh,
-        GAP_PREFERRED_PX
-    );
-    const cell = Math.max(1, s);
-
-    if (mainEl) {
-        mainEl.style.setProperty('--all-years-side', `${gap}px`);
+    let result;
+    for (let pass = 0; pass < 2; pass++) {
+        const inner = getFitAreaSize();
+        result = computeOptimalSquareGrid(
+            itemCount,
+            inner.width,
+            inner.height,
+            GAP_PREFERRED_PX
+        );
+        if (mainEl) {
+            mainEl.style.setProperty('--all-years-side', `${result.gap}px`);
+        }
     }
+
+    const { s, cols, gap } = result;
+    const cell = Math.max(1, s);
 
     gridEl.style.display = 'grid';
     gridEl.style.width = '100%';
@@ -150,7 +158,10 @@ function fitGridToWindow() {
 }
 
 function buildGrid(items) {
-    if (mainEl) mainEl.classList.remove('main-wrap--error');
+    if (mainEl) {
+        mainEl.classList.remove('main-wrap--error');
+        mainEl.style.removeProperty('--all-years-side');
+    }
     if (errorEl) errorEl.hidden = true;
     if (!gridEl) return;
     gridEl.innerHTML = '';
@@ -235,9 +246,5 @@ async function init() {
         showError('Could not load manifest.json. From the project root, run:');
     }
 }
-
-document.getElementById('nav-close')?.addEventListener('click', () => {
-    window.location.href = '../#1';
-});
 
 init();

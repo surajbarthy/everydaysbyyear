@@ -1,8 +1,6 @@
 /*
- * Side inset tracks the same px value as grid `gap` (set in JS as --all-years-side).
- * Matches the space between thumbnails on the left/right edges.
+ * Outer inset matches grid gap (JS sets --all-years-side to the same px as grid gap).
  */
 body.page-all-years-fit .main-wrap {
-    padding-left: calc(var(--header-pad) + var(--all-years-side, 3px));
-    padding-right: calc(var(--header-pad) + var(--all-years-side, 3px));
+    padding: var(--all-years-side, 3px);
 }
