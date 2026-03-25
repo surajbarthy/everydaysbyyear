@@ -3,6 +3,7 @@ const SLIDESHOW_INTERVAL_MS = 2500; // 2.5 seconds
 const GUTTER_SIZE = 2; // pixels between grid items
 const MIN_COLUMNS = 8;
 const MAX_COLUMNS = 30;
+const MAX_SERIES_YEAR = 10;
 
 // State
 let allManifests = {}; // All years from manifest.json
@@ -17,11 +18,44 @@ const slideshowImage = document.getElementById('slideshow-image');
 const gridContainer = document.getElementById('grid-container');
 const errorMessage = document.getElementById('error-message');
 const yearLabel = document.querySelector('.year-label');
+const linkFitView = document.getElementById('link-fit-view');
+
+function displayYearKeys(manifests) {
+    return Object.keys(manifests)
+        .filter(
+            (k) =>
+                /^\d+$/.test(k) &&
+                k !== '99' &&
+                parseInt(k, 10) >= 1 &&
+                parseInt(k, 10) <= MAX_SERIES_YEAR
+        )
+        .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+}
+
+function fillShowYearNav() {
+    const host = document.getElementById('show-year-links');
+    if (!host) return;
+    host.innerHTML = '';
+    displayYearKeys(allManifests).forEach((y) => {
+        const a = document.createElement('a');
+        a.href = `#${y}`;
+        a.textContent = y;
+        a.dataset.year = y;
+        a.className = 'show-year-link';
+        host.appendChild(a);
+    });
+}
+
+function updateShowYearNavHighlight() {
+    document.querySelectorAll('.show-year-link').forEach((a) => {
+        a.classList.toggle('is-current', a.dataset.year === String(currentYear));
+    });
+}
 
 // Get year from URL hash (#1, #2, etc.) or default to "1"
 function getYearFromHash() {
-    const hash = window.location.hash.slice(1); // Remove the #
-    return hash || '1'; // Default to year 1 if no hash
+    let h = window.location.hash.slice(1).replace(/^\/+/, '');
+    return h || '1';
 }
 
 // Update URL hash without triggering reload
@@ -49,6 +83,7 @@ async function init() {
             loadYear(getYearFromHash());
         });
 
+        fillShowYearNav();
         // Load the year from hash (or default to "1")
         loadYear(getYearFromHash());
         
@@ -70,44 +105,47 @@ async function init() {
 
 // Load a specific year's images
 function loadYear(year) {
-    if (!allManifests[year]) {
-        // Year doesn't exist, try to find first available year
-        const availableYears = Object.keys(allManifests).sort();
-        if (availableYears.length > 0) {
-            year = availableYears[0];
-            setYearHash(year);
-        } else {
-            showError(`Year ${year} not found in manifest.json`);
-            return;
-        }
+    const keys = displayYearKeys(allManifests);
+    if (keys.length === 0) {
+        showError('No years 1–10 found in manifest.json (folder "99" is omitted).');
+        return;
     }
 
-    currentYear = year;
-    images = allManifests[year];
-    
-    if (images.length === 0) {
+    if (!keys.includes(year)) {
+        setYearHash(keys[0]);
+        return;
+    }
+
+    const list = allManifests[year];
+    if (!Array.isArray(list) || list.length === 0) {
         showError(`No images found for year ${year}`);
         return;
     }
 
-    // Update year label
+    currentYear = year;
+    images = list;
+
     if (yearLabel) {
-        const calendarYear = 2015 + parseInt(year);
-        yearLabel.textContent = `YEAR ${year} - ${calendarYear}`;
+        const calendarYear = 2015 + parseInt(year, 10);
+        yearLabel.textContent = `Year ${year} · ${calendarYear}`;
+    }
+
+    if (linkFitView) {
+        linkFitView.href = `year1-grid-fit/#${year}`;
     }
 
     errorMessage.style.display = 'none';
     currentIndex = 0;
-    
-    // Stop current slideshow
+
     if (slideshowInterval) {
         clearInterval(slideshowInterval);
         slideshowInterval = null;
     }
-    
+
     initializeSlideshow();
     initializeGrid();
     startSlideshow();
+    updateShowYearNavHighlight();
 }
 
 // Poll for manifest.json changes and reload if updated
@@ -146,7 +184,7 @@ async function startManifestPolling() {
                 if (newHash !== lastManifestHash) {
                     console.log('Manifest updated, reloading...');
                     allManifests = newManifests;
-                    // Reload current year
+                    fillShowYearNav();
                     loadYear(currentYear || getYearFromHash());
                     lastManifestHash = newHash;
                 }

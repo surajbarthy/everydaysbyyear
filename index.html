@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header class="site-header">
+        <nav class="nav-left" aria-label="Views">
+            <span class="nav-current" aria-current="page">Slideshow</span>
+            <a href="year1-grid/">Scroll grid</a>
+            <a href="year1-grid-fit/#1" id="link-fit-view">Year (fit)</a>
+        </nav>
+        <h1 class="site-title">Everydays</h1>
+        <div class="header-spacer" aria-hidden="true"></div>
+    </header>
+
     <div class="book-container">
         <!-- Left Panel: Slideshow -->
         <div class="panel left-panel">
@@ -21,10 +31,17 @@
                 <p>manifest.json not found. Please run:</p>
                 <code>node generate-manifest.mjs</code>
             </div>
-            <div class="year-label">YEAR 1</div>
+            <div class="year-label">Year 1 · 2016</div>
             <div id="grid-container" class="grid-container"></div>
         </div>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-right">
+            <a href="all-years-fit/" class="footer-all-years">All years</a>
+            <nav class="footer-years" id="show-year-links" aria-label="Jump to year"></nav>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
